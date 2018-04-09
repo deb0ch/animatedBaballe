@@ -38,4 +38,15 @@ platform :android do
           build_secret: "0292321e17f88dd00d174718a02608f6675a17f51cf81399b88012f037b6c77f",
         )
 
+        git_commit(
+            path: File.dirname('./android/app/build.gradle'),
+            message: "bump version"
+        )
+
+        add_git_tag(
+            tag: "v#{lane_context[SharedValues::ANDROID_VERSION_NAME]}"
+        )
+
+        push_to_git_remote
+    end
 end
