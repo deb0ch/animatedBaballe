@@ -2,10 +2,10 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
-def VERSION_BUILD=5
+def VERSION_BUILD=6
 def VERSION_MAJOR=1
 def VERSION_MINOR=0
-def VERSION_PATCH=4
+def VERSION_PATCH=5
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
