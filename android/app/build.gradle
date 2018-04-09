@@ -2,6 +2,11 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
+def VERSION_BUILD=1
+def VERSION_MAJOR=1
+def VERSION_MINOR=0
+def VERSION_PATCH=0
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -101,8 +106,8 @@ android {
         applicationId "com.animatedbaballe"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode VERSION_BUILD
+        versionName VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_PATCH
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

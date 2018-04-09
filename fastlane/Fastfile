@@ -1,4 +1,5 @@
 
+actions_path 'actions/'
 fastlane_version "2.68.0"
 
 default_platform :android
@@ -15,9 +16,14 @@ platform :android do
             task: 'clean',
             project_dir: 'android/'
         )
+        increment_android_version_code(path: './android/app/build.gradle')
     end
 
     lane :beta do
+        increment_android_version_name(
+            path: './android/app/build.gradle',
+            type: "patch"
+        )
 
         gradle(
             task: 'assemble',
