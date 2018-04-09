@@ -60,11 +60,11 @@ module Fastlane
                 updated_data = data
                 data.each_line do |line|
                     if (line.start_with?("def VERSION_MAJOR"))
-                        updated_data = updated_data.gsub(line, "def VERSION_MAJOR=#{major}\r\n")
+                        updated_data = updated_data.gsub(line, "def VERSION_MAJOR=#{major}\n")
                     elsif (line.start_with?("def VERSION_MINOR"))
-                        updated_data = updated_data.gsub(line, "def VERSION_MINOR=#{minor}\r\n")
+                        updated_data = updated_data.gsub(line, "def VERSION_MINOR=#{minor}\n")
                     elsif (line.start_with?("def VERSION_PATCH"))
-                        updated_data = updated_data.gsub(line, "def VERSION_PATCH=#{patch}\r\n")
+                        updated_data = updated_data.gsub(line, "def VERSION_PATCH=#{patch}\n")
                     end
                 end
 

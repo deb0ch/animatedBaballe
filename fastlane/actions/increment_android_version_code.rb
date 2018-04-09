@@ -17,7 +17,7 @@ module Fastlane
                      if (line.start_with?('def VERSION_BUILD'))
                          foundBuild = true
                          buildNumber =  line.delete("def VERSION_BUILD=").to_i + 1
-                         updated_data = updated_data.gsub(line, "def VERSION_BUILD=#{buildNumber}\r\n")
+                         updated_data = updated_data.gsub(line, "def VERSION_BUILD=#{buildNumber}\n")
                      end
                  end
 
