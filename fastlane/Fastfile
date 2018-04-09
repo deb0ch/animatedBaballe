@@ -31,11 +31,13 @@ platform :android do
             project_dir: 'android/'
         )
 
+        changelog = changelog_from_git_commits
 
         # don't mind publishing to GitHub since it is a dummy organization
         crashlytics(
           api_token: "afe07034e00f5c1cb31684b4d7aeafbd81def414",
           build_secret: "0292321e17f88dd00d174718a02608f6675a17f51cf81399b88012f037b6c77f",
+          notes: changelog
         )
 
         git_commit(
