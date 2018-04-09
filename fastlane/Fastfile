@@ -1,0 +1,24 @@
+
+fastlane_version "2.68.0"
+
+default_platform :android
+
+before_all do
+    # ensure_git_branch
+    # ensure_git_status_clean
+    # git_pull
+end
+
+lane :beta do
+    # Alternate way of building an android project
+    # build_android_app(task: "assembleDebug", project_dir: 'android/')
+
+    gradle(task: 'clean', project_dir: 'android/')
+    gradle(task: 'assemble', build_type: 'Debug', project_dir: 'android/')
+
+    # don't mind publishing to GitHub since it is just a dummy organization
+    crashlytics(
+      api_token: "afe07034e00f5c1cb31684b4d7aeafbd81def414",
+      build_secret: "0292321e17f88dd00d174718a02608f6675a17f51cf81399b88012f037b6c77f"
+    )
+end
