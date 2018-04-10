@@ -14,7 +14,7 @@ export default class App extends Component {
   constructor () {
     super();
     this.animatedBaballe = new Animated.Value(0);
-    this.animatedBaballeOnTouch = new Animated.Value(baballeSize);
+    this.animatedBaballeSize = new Animated.Value(baballeSize);
   }
 
   componentWillMount () {
@@ -50,9 +50,9 @@ export default class App extends Component {
   }
 
   animateOnTouch() {
-    this.animatedBaballeOnTouch.setValue(baballeSize * 0.9);
+    this.animatedBaballeSize.setValue(baballeSize * 0.9);
     Animated.spring(
-      this.animatedBaballeOnTouch,
+      this.animatedBaballeSize,
       {
         toValue: baballeSize,
         friction: 1.5,
@@ -74,15 +74,15 @@ export default class App extends Component {
       inputRange: [0, 0.5, 1],
       outputRange: [1, 2, 1]
     });
-    const animatedBorderRadius = Animated.divide(this.animatedBaballeOnTouch, 2.0);
+    const animatedBorderRadius = Animated.divide(this.animatedBaballeSize, 2.0);
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.baballe, {
                           backgroundColor: animatedColor,
                           marginBottom: animatedMargin,
                           transform: [{scale: animatedScale}],
-                          width: this.animatedBaballeOnTouch,
-                          height: this.animatedBaballeOnTouch,
+                          width: this.animatedBaballeSize,
+                          height: this.animatedBaballeSize,
                           borderRadius: animatedBorderRadius,
                        }]}
                        {...this.panResponder.panHandlers}
