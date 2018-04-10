@@ -75,6 +75,10 @@ export default class App extends Component {
       outputRange: [1, 2, 1]
     });
     const animatedBorderRadius = Animated.divide(this.animatedBaballeSize, 2.0);
+    const animatedSideMargin = Animated.divide(
+      Animated.add(Dimensions.get('window').width,
+                   Animated.multiply(this.animatedBaballeSize, -1)),
+      2.0);
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.baballe, {
@@ -84,6 +88,8 @@ export default class App extends Component {
                           width: this.animatedBaballeSize,
                           height: this.animatedBaballeSize,
                           borderRadius: animatedBorderRadius,
+                          marginLeft: animatedSideMargin,
+                          marginRight: animatedSideMargin,
                        }]}
                        {...this.panResponder.panHandlers}
         >
@@ -107,7 +113,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   baballe: {
-    marginLeft: (Dimensions.get('window').width - baballeSize) / 2.0,
-    marginRight: (Dimensions.get('window').width - baballeSize) / 2.0,
   }
 });
