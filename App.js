@@ -68,7 +68,7 @@ export default class App extends Component {
     });
     const animatedColor = this.animatedBaballe.interpolate({
       inputRange: [0, 0.5, 1],
-      outputRange: ["#123", "#f109bc", "#123"]
+      outputRange: ["#ea296a", "#ffeb3b", "#ea296a"]
     });
     const animatedScale = this.animatedBaballe.interpolate({
       inputRange: [0, 0.5, 1],
@@ -100,7 +100,7 @@ const baballeSize = 44;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#4b5cba',
     alignItems: 'flex-end',
     alignSelf: 'center',
     flexDirection: 'row',
