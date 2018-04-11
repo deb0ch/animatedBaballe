@@ -44,14 +44,14 @@ export default class App extends Component {
 
   getBaballeTravelTime(v0)
   {
-    return baballeMass * ((Math.abs(v0) + Math.sqrt((v0 ** 2) + 1))
+    return baballeMass * ((Math.abs(v0) + Math.sqrt(Math.pow(v0, 2) + 1))
                           / baballeFriction);
   }
 
   getBaballeTravelDistance(v0)
   {
     const sign = v0 > 0 ? 1 : -1;
-    return sign * ((v0 ** 2) * baballeMass / (2 * baballeFriction));
+    return sign * (Math.pow(v0, 2) * baballeMass / (2 * baballeFriction));
   }
 
   animateThrow(currentY, speedY) {
