@@ -84,7 +84,7 @@ export default class App extends Component {
         <Animated.View style={[styles.baballe, {
                           backgroundColor: animatedColor,
                           marginBottom: animatedMargin,
-                          transform: [{scale: animatedScale}],
+                          transform: [{scaleY: animatedScale}],
                           width: this.animatedBaballeSize,
                           height: this.animatedBaballeSize,
                           borderRadius: animatedBorderRadius,
