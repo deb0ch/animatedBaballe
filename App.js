@@ -36,7 +36,7 @@ export default class App extends Component {
         this.animatedBaballePoseY.setValue(gestureState.moveY - baballeSize / 2);
       },
       onPanResponderRelease: (evt, gestureState) => {
-          this.animateThrow(gestureState.moveY, gestureState.vy);
+        this.animateThrow(gestureState.moveY, gestureState.vy);
       },
       onPanResponderTerminate: (evt, gestureState) => {},
     });
