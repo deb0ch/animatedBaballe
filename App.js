@@ -33,7 +33,7 @@ export default class App extends Component {
       onShouldBlockNativeResponder: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => { this.animateOnTouch(); },
       onPanResponderMove: (evt, gestureState) => {
-        this.animatedBaballePoseY.setValue(gestureState.moveY - baballeSize);
+        this.animatedBaballePoseY.setValue(gestureState.moveY);
       },
       onPanResponderRelease: (evt, gestureState) => {
         this.animateThrow(gestureState.moveY, gestureState.vy);
