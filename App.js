@@ -62,13 +62,11 @@ export default class App extends Component {
     console.log("dist / time = ", (this.getBaballeTravelDistance(speedY)
                                    / this.getBaballeTravelTime(speedY)));
     console.log(" ---------------------------- ");
-    Animated.timing(
+    Animated.decay(
       this.animatedBaballePoseY, {
-        toValue: currentY + this.getBaballeTravelDistance(speedY),
-        duration: this.getBaballeTravelTime(speedY),
-        easing: Easing.out(Easing.ease),
-      },
-    ).start();
+        velocity: speedY,
+        deceleration: 0.997,
+      }).start();
   }
 
   animateOnTouch() {
