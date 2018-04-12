@@ -66,7 +66,7 @@ export default class App extends Component {
       this.animatedBaballePoseY, {
         toValue: currentY + this.getBaballeTravelDistance(speedY),
         duration: this.getBaballeTravelTime(speedY),
-        easing: Easing.easeOutQuad,
+        easing: Easing.out(Easing.ease),
       },
     ).start();
   }
