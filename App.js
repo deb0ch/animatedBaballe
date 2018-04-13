@@ -64,11 +64,25 @@ export default class App extends Component {
     ).start();
   }
 
+  makeWrappingRange(value, numWraps) {
+    const inputRange = [];
+    const outputRange = [];
+
+    inputRange.push(0);
+    outputRange.push(0);
+    for (i = 1; i < numWraps; i++) {
+      inputRange.unshift(-i * value);
+      inputRange.push(i * value);
+      outputRange.unshift(i % 2 === 0 ? 0 : value);
+      outputRange.push(i % 2 === 0 ? 0 : value);
+    }
+    return {inputRange, outputRange};
+  }
+
   render() {
     const heightLimit = Dimensions.get('window').height - baballeSize;
-    const clampedAnimatedPoseY = this.animatedBaballePoseY.interpolate({
-      inputRange:  [0, heightLimit],
-      outputRange: [0, heightLimit],
+    const wrappedAnimatedPoseY = this.animatedBaballePoseY.interpolate({
+      ...this.makeWrappingRange(heightLimit, 100),
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
       }
@@ -77,7 +91,7 @@ export default class App extends Component {
       <View style={styles.container}>
         <Animated.View style={[styles.baballe, {
                          transform: [{scale: this.animatedBaballeOnTouch}],
-                         top: clampedAnimatedPoseY,
+                         top: wrappedAnimatedPoseY,
                        }]}
                        {...this.panResponder.panHandlers}
         >
