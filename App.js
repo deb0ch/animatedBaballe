@@ -11,8 +11,6 @@ import { Animated,
 
 
 const baballeSize = 44;
-const baballeFriction = 0.1
-const baballeMass = 10
 
 
 export default class App extends Component {
@@ -47,26 +45,7 @@ export default class App extends Component {
     });
   }
 
-  getBaballeTravelTime(v0)
-  {
-    return baballeMass * ((Math.abs(v0) + Math.sqrt(Math.pow(v0, 2) + 1))
-                          / baballeFriction);
-  }
-
-  getBaballeTravelDistance(v0)
-  {
-    const sign = v0 > 0 ? 1 : -1;
-    return sign * (Math.pow(v0, 2) * baballeMass / (2 * baballeFriction));
-  }
-
   animateThrow(currentY, speedY) {
-    console.log(" ---------------------------- ");
-    console.log("v0 = ", speedY);
-    console.log("dist = ", this.getBaballeTravelDistance(speedY));
-    console.log("time = ", this.getBaballeTravelTime(speedY));
-    console.log("dist / time = ", (this.getBaballeTravelDistance(speedY)
-                                   / this.getBaballeTravelTime(speedY)));
-    console.log(" ---------------------------- ");
     Animated.decay(
       this.animatedBaballePoseY, {
         velocity: speedY,
