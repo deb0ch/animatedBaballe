@@ -16,8 +16,9 @@ const baballeSize = 44;
 export default class App extends Component {
   constructor () {
     super();
-    const initialHeight = (Dimensions.get('window').height - baballeSize) / 2.0;
-    this.animatedBaballePoseY = new Animated.Value(initialHeight);
+    const initialY = (Dimensions.get('window').height - baballeSize) / 2.0;
+    const initialX = (Dimensions.get('window').width - baballeSize) / 2.0;
+    this.animatedBaballePose = new Animated.ValueXY({x: initialX, y: initialY});
     this.animatedBaballeOnTouch = new Animated.Value(1.0);
     this.touchOffset = {x: 0, y: 0};
   }
@@ -36,21 +37,20 @@ export default class App extends Component {
         this.animateOnTouch();
       },
       onPanResponderMove: (evt, gestureState) => {
-        this.animatedBaballePoseY.setValue(gestureState.moveY - this.touchOffset.y);
+        this.animatedBaballePose.setValue({
+          x: gestureState.moveX - this.touchOffset.x,
+          y: gestureState.moveY - this.touchOffset.y,
+        });
       },
       onPanResponderRelease: (evt, gestureState) => {
-        this.animateThrow(gestureState.moveY, gestureState.vy);
+        Animated.decay(
+          this.animatedBaballePose, {
+            velocity: {x: gestureState.vx, y: gestureState.vy},
+            deceleration: 0.997,
+          }).start();
       },
       onPanResponderTerminate: (evt, gestureState) => {},
     });
-  }
-
-  animateThrow(currentY, speedY) {
-    Animated.decay(
-      this.animatedBaballePoseY, {
-        velocity: speedY,
-        deceleration: 0.997,
-      }).start();
   }
 
   animateOnTouch() {
@@ -80,18 +80,25 @@ export default class App extends Component {
   }
 
   render() {
-    const heightLimit = Dimensions.get('window').height - baballeSize;
-    const wrappedAnimatedPoseY = this.animatedBaballePoseY.interpolate({
-      ...this.makeWrappingRange(heightLimit, 100),
+    const limitX = Dimensions.get('window').width - baballeSize;
+    const limitY = Dimensions.get('window').height - baballeSize;
+    const wrappedAnimatedPoseX = this.animatedBaballePose.x.interpolate({
+      ...this.makeWrappingRange(limitX, 100),
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
-      }
-    );
+    });
+    const wrappedAnimatedPoseY = this.animatedBaballePose.y.interpolate({
+      ...this.makeWrappingRange(limitY, 100),
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.baballe, {
                          transform: [{scale: this.animatedBaballeOnTouch}],
                          top: wrappedAnimatedPoseY,
+                         left: wrappedAnimatedPoseX,
                        }]}
                        {...this.panResponder.panHandlers}
         >
@@ -116,7 +123,6 @@ const styles = StyleSheet.create({
   baballe: {
     backgroundColor: "#ea296a",
     position: 'absolute',
-    left: (Dimensions.get('window').width - baballeSize) / 2.0,
     borderRadius: baballeSize / 2.0,
     width: baballeSize,
     height: baballeSize,
