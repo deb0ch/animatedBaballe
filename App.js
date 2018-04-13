@@ -21,11 +21,7 @@ export default class App extends Component {
     const initialHeight = (Dimensions.get('window').height - baballeSize) / 2.0;
     this.animatedBaballePoseY = new Animated.Value(initialHeight);
     this.animatedBaballeOnTouch = new Animated.Value(1.0);
-    this.state = {
-      baballeY: initialHeight,
-      origBaballeY: 0,
-    }
-    this.animatedBaballePoseY.addListener((e) => this.setState({baballeY: e.value}));
+    this.touchOffset = {x: 0, y: 0};
   }
 
   componentWillMount () {
@@ -37,11 +33,12 @@ export default class App extends Component {
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onShouldBlockNativeResponder: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
-        this.setState((prevState) => ({origBaballeY: prevState.baballeY}))
+        this.touchOffset.x = evt.nativeEvent.locationX;
+        this.touchOffset.y = evt.nativeEvent.locationY;
         this.animateOnTouch();
       },
       onPanResponderMove: (evt, gestureState) => {
-        this.animatedBaballePoseY.setValue(this.state.origBaballeY + gestureState.dy);
+        this.animatedBaballePoseY.setValue(gestureState.moveY - this.touchOffset.y);
       },
       onPanResponderRelease: (evt, gestureState) => {
         this.animateThrow(gestureState.moveY, gestureState.vy);
