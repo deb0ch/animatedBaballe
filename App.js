@@ -67,10 +67,9 @@ export default class App extends Component {
   makeWrappingRange(value, numWraps) {
     const inputRange = [];
     const outputRange = [];
-
     inputRange.push(0);
     outputRange.push(0);
-    for (i = 1; i < numWraps; i++) {
+    for (i = 1; i <= numWraps; i++) {
       inputRange.unshift(-i * value);
       inputRange.push(i * value);
       outputRange.unshift(i % 2 === 0 ? 0 : value);
