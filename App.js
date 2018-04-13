@@ -65,11 +65,19 @@ export default class App extends Component {
   }
 
   render() {
+    const heightLimit = Dimensions.get('window').height - baballeSize;
+    const clampedAnimatedPoseY = this.animatedBaballePoseY.interpolate({
+      inputRange:  [0, heightLimit],
+      outputRange: [0, heightLimit],
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      }
+    );
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.baballe, {
                          transform: [{scale: this.animatedBaballeOnTouch}],
-                         top: this.animatedBaballePoseY,
+                         top: clampedAnimatedPoseY,
                        }]}
                        {...this.panResponder.panHandlers}
         >
