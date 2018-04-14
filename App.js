@@ -1,7 +1,6 @@
 
 import React, { Component }    from 'react';
 import { Animated,
-         Dimensions,
          Easing,
          PanResponder,
          StyleSheet,
@@ -16,11 +15,13 @@ const baballeSize = 44;
 export default class App extends Component {
   constructor () {
     super();
-    const initialY = (Dimensions.get('window').height - baballeSize) / 2.0;
-    const initialX = (Dimensions.get('window').width - baballeSize) / 2.0;
-    this.animatedBaballePose = new Animated.ValueXY({x: initialX, y: initialY});
+    this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
     this.animatedBaballeOnTouch = new Animated.Value(1.0);
     this.touchOffset = {x: 0, y: 0};
+    this.baballeInitialized = false;
+    this.state = {
+      layout: null,
+    };
   }
 
   componentWillMount () {
@@ -78,9 +79,29 @@ export default class App extends Component {
     return {inputRange, outputRange};
   }
 
+  initBaballe(layout) {
+    this.animatedBaballePose.x.setValue((layout.width - baballeSize) / 2);
+    this.animatedBaballePose.y.setValue((layout.height - baballeSize) / 2);
+    this.baballeInitialized = true;
+  }
+
+  handleOnLayout(e) {
+    const layout = e.nativeEvent.layout;
+    if (!this.state.baballeInitialized)
+      this.initBaballe(layout);
+    this.setState({layout});
+  }
+
   render() {
-    const limitX = Dimensions.get('window').width - baballeSize;
-    const limitY = Dimensions.get('window').height - baballeSize;
+    if (!this.state.layout) {
+      return (
+        <View style={styles.container}
+              onLayout={this.handleOnLayout.bind(this)}
+        />
+      );
+    }
+    const limitX = this.state.layout.width - baballeSize;
+    const limitY = this.state.layout.height - baballeSize;
     const wrappedAnimatedPoseX = this.animatedBaballePose.x.interpolate({
       ...this.makeWrappingRange(limitX, 100),
       extrapolateLeft: 'clamp',
@@ -93,7 +114,9 @@ export default class App extends Component {
     });
 
     return (
-      <View style={styles.container}>
+      <View style={styles.container}
+            onLayout={this.handleOnLayout.bind(this)}
+      >
         <Animated.View style={[styles.baballe, {
                          transform: [{scale: this.animatedBaballeOnTouch}],
                          top: wrappedAnimatedPoseY,
@@ -112,12 +135,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#4b5cba',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-    alignItems: 'flex-end',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
   },
   baballe: {
     backgroundColor: "#ea296a",
