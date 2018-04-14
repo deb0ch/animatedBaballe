@@ -9,7 +9,7 @@ import { Animated,
          View } from 'react-native';
 
 
-const baballeSize = 44;
+const baballeSize = 55;
 
 
 export default class App extends Component {
