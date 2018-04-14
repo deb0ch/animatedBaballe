@@ -112,7 +112,6 @@ export default class App extends Component {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });
-
     return (
       <View style={styles.container}
             onLayout={this.handleOnLayout.bind(this)}
@@ -123,8 +122,7 @@ export default class App extends Component {
                          left: wrappedAnimatedPoseX,
                        }]}
                        {...this.panResponder.panHandlers}
-        >
-        </Animated.View>
+        />
       </View>
     );
   }
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
   baballe: {
     backgroundColor: "#ea296a",
     position: 'absolute',
-    borderRadius: baballeSize / 2.0,
+    borderRadius: baballeSize / 2,
     width: baballeSize,
     height: baballeSize,
   }
