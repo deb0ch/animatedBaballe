@@ -1,10 +1,11 @@
 
-import React, { Component }    from 'react';
+import React, { Component } from 'react';
+import { StackNavigator }   from 'react-navigation';
 
 import Baballe from './src/Baballe'
 
 
-export default class App extends Component {
+class BaballeScreen extends Component {
   render() {
     return (
       <Baballe bgColor={'#4b5cba'}
@@ -12,6 +13,28 @@ export default class App extends Component {
                baballeColor2={'#ffeb3b'}
                baballeSize={55}
       />
+    );
+  }
+}
+
+
+const RootStack = StackNavigator({
+  Baballe: {
+    screen: BaballeScreen,
+  },
+}, {
+  initialRouteName: 'Baballe',
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  }
+});
+
+
+export default class App extends Component {
+  render() {
+    return (
+      <RootStack />
     );
   }
 }
