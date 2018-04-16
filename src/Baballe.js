@@ -1,4 +1,5 @@
 
+import PropTypes            from 'prop-types';
 import React, { Component } from 'react';
 import { Animated,
          Easing,
@@ -9,16 +10,26 @@ import { Animated,
          View }             from 'react-native';
 
 
-const baballeSize = 55;
-
-
 export default class Baballe extends Component {
-  constructor () {
-    super();
+  constructor (props) {
+    super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
     this.animatedBaballeOnTouch = new Animated.Value(1.0);
     this.touchOffset = {x: 0, y: 0};
     this.baballeInitialized = false;
+    this.styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        backgroundColor: this.props.bgColor,
+      },
+      baballe: {
+        backgroundColor: this.props.baballeColor,
+        position: 'absolute',
+        borderRadius: this.props.baballeSize / 2,
+        width: this.props.baballeSize,
+        height: this.props.baballeSize,
+      }
+    });
     this.state = {
       layout: null,
     };
@@ -80,8 +91,8 @@ export default class Baballe extends Component {
   }
 
   initBaballe(layout) {
-    this.animatedBaballePose.x.setValue((layout.width - baballeSize) / 2);
-    this.animatedBaballePose.y.setValue((layout.height - baballeSize) / 2);
+    this.animatedBaballePose.x.setValue((layout.width - this.props.baballeSize) / 2);
+    this.animatedBaballePose.y.setValue((layout.height - this.props.baballeSize) / 2);
     this.baballeInitialized = true;
   }
 
@@ -95,13 +106,13 @@ export default class Baballe extends Component {
   render() {
     if (!this.state.layout) {
       return (
-        <View style={styles.container}
+        <View style={this.styles.container}
               onLayout={this.handleOnLayout.bind(this)}
         />
       );
     }
-    const limitX = this.state.layout.width - baballeSize;
-    const limitY = this.state.layout.height - baballeSize;
+    const limitX = this.state.layout.width - this.props.baballeSize;
+    const limitY = this.state.layout.height - this.props.baballeSize;
     const wrappedAnimatedPoseX = this.animatedBaballePose.x.interpolate({
       ...this.makeWrappingRange(limitX, 100),
       extrapolateLeft: 'clamp',
@@ -113,10 +124,10 @@ export default class Baballe extends Component {
       extrapolateRight: 'clamp',
     });
     return (
-      <View style={styles.container}
+      <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
       >
-        <Animated.View style={[styles.baballe, {
+        <Animated.View style={[this.styles.baballe, {
                          transform: [{scale: this.animatedBaballeOnTouch}],
                          top: wrappedAnimatedPoseY,
                          left: wrappedAnimatedPoseX,
@@ -128,17 +139,8 @@ export default class Baballe extends Component {
   }
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#4b5cba',
-  },
-  baballe: {
-    backgroundColor: "#ea296a",
-    position: 'absolute',
-    borderRadius: baballeSize / 2,
-    width: baballeSize,
-    height: baballeSize,
-  }
-});
+Baballe.propTypes = {
+  bgColor: PropTypes.string.isRequired,
+  baballeColor: PropTypes.string.isRequired,
+  baballeSize: PropTypes.number.isRequired,
+};
