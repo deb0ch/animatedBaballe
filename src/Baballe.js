@@ -14,7 +14,8 @@ export default class Baballe extends Component {
   constructor (props) {
     super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
-    this.animatedBaballeOnTouch = new Animated.Value(1.0);
+    this.animatedBaballeOnTouch = new Animated.Value(1);
+    this.animatedBaballeTravel = new Animated.Value(0);
     this.touchOffset = {x: 0, y: 0};
     this.baballeInitialized = false;
     this.styles = StyleSheet.create({
@@ -47,6 +48,13 @@ export default class Baballe extends Component {
         this.touchOffset.x = evt.nativeEvent.locationX;
         this.touchOffset.y = evt.nativeEvent.locationY;
         this.animateOnTouch();
+        Animated.loop(Animated.timing(
+          this.animatedBaballeTravel, {
+            toValue: 1200,
+            duration: 600,
+            easing: Easing.sin,
+          }
+        )).start();
       },
       onPanResponderMove: (evt, gestureState) => {
         this.animatedBaballePose.setValue({
@@ -59,7 +67,14 @@ export default class Baballe extends Component {
           this.animatedBaballePose, {
             velocity: {x: gestureState.vx, y: gestureState.vy},
             deceleration: 0.997,
-          }).start();
+          }
+        ).start();
+        Animated.decay(
+          this.animatedBaballeTravel, {
+            velocity: Math.sqrt(Math.pow(gestureState.vx, 2) + Math.pow(gestureState.vy, 2)),
+            deceleration: 0.997,
+          }
+        ).start();
       },
       onPanResponderTerminate: (evt, gestureState) => {},
     });
@@ -86,6 +101,20 @@ export default class Baballe extends Component {
       inputRange.push(i * value);
       outputRange.unshift(i % 2 === 0 ? 0 : value);
       outputRange.push(i % 2 === 0 ? 0 : value);
+    }
+    return {inputRange, outputRange};
+  }
+
+  makeColorFadingRange(period, times, color1, color2) {
+    const inputRange = [];
+    const outputRange = [];
+    inputRange.push(0);
+    outputRange.push(color1);
+    for (const i = 1; i <= times; i++) {
+      inputRange.unshift(-i * period);
+      inputRange.push(i * period);
+      outputRange.unshift(i % 2 ? color2 : color1);
+      outputRange.push(i % 2 ? color2 : color1);
     }
     return {inputRange, outputRange};
   }
@@ -123,6 +152,11 @@ export default class Baballe extends Component {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });
+    const baballeColor = this.animatedBaballeTravel.interpolate({
+      ...this.makeColorFadingRange(600, 100,
+                                   this.props.baballeColor1,
+                                   this.props.baballeColor2),
+    })
     return (
       <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
@@ -131,6 +165,7 @@ export default class Baballe extends Component {
                          transform: [{scale: this.animatedBaballeOnTouch}],
                          top: wrappedAnimatedPoseY,
                          left: wrappedAnimatedPoseX,
+                         backgroundColor: baballeColor,
                        }]}
                        {...this.panResponder.panHandlers}
         />
@@ -141,6 +176,7 @@ export default class Baballe extends Component {
 
 Baballe.propTypes = {
   bgColor: PropTypes.string.isRequired,
-  baballeColor: PropTypes.string.isRequired,
+  baballeColor1: PropTypes.string.isRequired,
+  baballeColor2: PropTypes.string.isRequired,
   baballeSize: PropTypes.number.isRequired,
 };
