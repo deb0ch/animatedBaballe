@@ -2,6 +2,7 @@
 import PropTypes            from 'prop-types';
 import React, { Component } from 'react';
 import { Animated,
+         Button,
          Easing,
          PanResponder,
          StyleSheet,
@@ -169,6 +170,12 @@ export default class Baballe extends Component {
                        }]}
                        {...this.panResponder.panHandlers}
         />
+        <Button title="next"
+                onPress={() => this.props.navigation.navigate(this.props.rightScreen)}
+        />
+        <Button title="prev"
+                onPress={() => this.props.navigation.navigate(this.props.leftScreen)}
+        />
       </View>
     );
   }
@@ -179,4 +186,6 @@ Baballe.propTypes = {
   baballeColor1: PropTypes.string.isRequired,
   baballeColor2: PropTypes.string.isRequired,
   baballeSize: PropTypes.number.isRequired,
+  leftScreen: PropTypes.string.isRequired,
+  rightScreen: PropTypes.string.isRequired,
 };
