@@ -45,38 +45,9 @@ export default class Baballe extends Component {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onShouldBlockNativeResponder: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        this.touchOffset.x = evt.nativeEvent.locationX;
-        this.touchOffset.y = evt.nativeEvent.locationY;
-        this.animateOnTouch();
-        Animated.loop(Animated.timing(
-          this.animatedBaballeTravel, {
-            toValue: 1200,
-            duration: 600,
-            easing: Easing.sin,
-          }
-        )).start();
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        this.animatedBaballePose.setValue({
-          x: gestureState.moveX - this.touchOffset.x,
-          y: gestureState.moveY - this.touchOffset.y,
-        });
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        Animated.decay(
-          this.animatedBaballePose, {
-            velocity: {x: gestureState.vx, y: gestureState.vy},
-            deceleration: 0.997,
-          }
-        ).start();
-        Animated.decay(
-          this.animatedBaballeTravel, {
-            velocity: Math.sqrt(Math.pow(gestureState.vx, 2) + Math.pow(gestureState.vy, 2)),
-            deceleration: 0.997,
-          }
-        ).start();
-      },
+      onPanResponderGrant: this.baballeOnPanResponderGrant.bind(this),
+      onPanResponderMove: this.baballeOnPanResponderMove.bind(this),
+      onPanResponderRelease: this.baballeOnPanResponderRelease.bind(this),
       onPanResponderTerminate: (evt, gestureState) => {},
     });
     this.panResponderNav = PanResponder.create({
@@ -88,15 +59,52 @@ export default class Baballe extends Component {
       onShouldBlockNativeResponder: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {},
       onPanResponderMove: (evt, gestureState) => {},
-      onPanResponderRelease: (evt, gestureState) => {
-        if (gestureState.dx > this.state.layout.x / 3) {
-          this.props.navigation.navigate(this.props.leftScreen);
-        } else if (gestureState.dx < -this.state.layout.x / 3) {
-          this.props.navigation.navigate(this.props.rightScreen);
-        }
-      },
+      onPanResponderRelease: this.navOnPanResponderRelease.bind(this),
       onPanResponderTerminate: (evt, gestureState) => {},
     });
+  }
+
+  baballeOnPanResponderGrant(evt, gestureState) {
+    this.touchOffset.x = evt.nativeEvent.locationX;
+    this.touchOffset.y = evt.nativeEvent.locationY;
+    this.animateOnTouch();
+    Animated.loop(Animated.timing(
+      this.animatedBaballeTravel, {
+        toValue: 1200,
+        duration: 600,
+        easing: Easing.sin,
+      }
+    )).start();
+  }
+
+  baballeOnPanResponderMove(evt, gestureState) {
+    this.animatedBaballePose.setValue({
+      x: gestureState.moveX - this.touchOffset.x,
+      y: gestureState.moveY - this.touchOffset.y,
+    });
+  }
+
+  baballeOnPanResponderRelease(evt, gestureState) {
+    Animated.decay(
+      this.animatedBaballePose, {
+        velocity: {x: gestureState.vx, y: gestureState.vy},
+        deceleration: 0.997,
+      }
+    ).start();
+    Animated.decay(
+      this.animatedBaballeTravel, {
+        velocity: Math.sqrt(Math.pow(gestureState.vx, 2) + Math.pow(gestureState.vy, 2)),
+        deceleration: 0.997,
+      }
+    ).start();
+  }
+
+  navOnPanResponderRelease(e, gestureState) {
+    if (gestureState.dx > this.state.layout.x / 3) {
+      this.props.navigation.navigate(this.props.leftScreen);
+    } else if (gestureState.dx < -this.state.layout.x / 3) {
+      this.props.navigation.navigate(this.props.rightScreen);
+    }
   }
 
   animateOnTouch() {
