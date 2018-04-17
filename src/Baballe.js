@@ -39,34 +39,34 @@ export default class Baballe extends Component {
 
   componentWillMount () {
     this.panResponderBaballe = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => false,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderTerminationRequest: (evt, gestureState) => false,
-      onShouldBlockNativeResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponder: (e, gestureState) => false,
+      onStartShouldSetPanResponderCapture: (e, gestureState) => true,
+      onMoveShouldSetPanResponder: (e, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (e, gestureState) => true,
+      onPanResponderTerminationRequest: (e, gestureState) => false,
+      onShouldBlockNativeResponder: (e, gestureState) => true,
       onPanResponderGrant: this.baballeOnPanResponderGrant.bind(this),
       onPanResponderMove: this.baballeOnPanResponderMove.bind(this),
       onPanResponderRelease: this.baballeOnPanResponderRelease.bind(this),
-      onPanResponderTerminate: (evt, gestureState) => {},
+      onPanResponderTerminate: (e, gestureState) => {},
     });
     this.panResponderNav = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onShouldBlockNativeResponder: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {},
-      onPanResponderMove: (evt, gestureState) => {},
+      onStartShouldSetPanResponder: (e, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (e, gestureState) => false,
+      onMoveShouldSetPanResponder: (e, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (e, gestureState) => false,
+      onPanResponderTerminationRequest: (e, gestureState) => true,
+      onShouldBlockNativeResponder: (e, gestureState) => true,
+      onPanResponderGrant: (e, gestureState) => {},
+      onPanResponderMove: (e, gestureState) => {},
       onPanResponderRelease: this.navOnPanResponderRelease.bind(this),
-      onPanResponderTerminate: (evt, gestureState) => {},
+      onPanResponderTerminate: (e, gestureState) => {},
     });
   }
 
-  baballeOnPanResponderGrant(evt, gestureState) {
-    this.touchOffset.x = evt.nativeEvent.locationX;
-    this.touchOffset.y = evt.nativeEvent.locationY;
+  baballeOnPanResponderGrant(e, gestureState) {
+    this.touchOffset.x = e.nativeEvent.locationX;
+    this.touchOffset.y = e.nativeEvent.locationY;
     this.animateOnTouch();
     Animated.loop(Animated.timing(
       this.animatedBaballeTravel, {
@@ -77,14 +77,14 @@ export default class Baballe extends Component {
     )).start();
   }
 
-  baballeOnPanResponderMove(evt, gestureState) {
+  baballeOnPanResponderMove(e, gestureState) {
     this.animatedBaballePose.setValue({
       x: gestureState.moveX - this.touchOffset.x,
       y: gestureState.moveY - this.touchOffset.y,
     });
   }
 
-  baballeOnPanResponderRelease(evt, gestureState) {
+  baballeOnPanResponderRelease(e, gestureState) {
     Animated.decay(
       this.animatedBaballePose, {
         velocity: {x: gestureState.vx, y: gestureState.vy},
