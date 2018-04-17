@@ -38,12 +38,12 @@ export default class Baballe extends Component {
   }
 
   componentWillMount () {
-    this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
+    this.panResponderBaballe = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => false,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderTerminationRequest: (evt, gestureState) => false,
       onShouldBlockNativeResponder: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
         this.touchOffset.x = evt.nativeEvent.locationX;
@@ -76,6 +76,24 @@ export default class Baballe extends Component {
             deceleration: 0.997,
           }
         ).start();
+      },
+      onPanResponderTerminate: (evt, gestureState) => {},
+    });
+    this.panResponderNav = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onShouldBlockNativeResponder: (evt, gestureState) => true,
+      onPanResponderGrant: (evt, gestureState) => {},
+      onPanResponderMove: (evt, gestureState) => {},
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > this.state.layout.x / 3) {
+          this.props.navigation.navigate(this.props.leftScreen);
+        } else if (gestureState.dx < -this.state.layout.x / 3) {
+          this.props.navigation.navigate(this.props.rightScreen);
+        }
       },
       onPanResponderTerminate: (evt, gestureState) => {},
     });
@@ -161,6 +179,7 @@ export default class Baballe extends Component {
     return (
       <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
+            {...this.panResponderNav.panHandlers}
       >
         <Animated.View style={[this.styles.baballe, {
                          transform: [{scale: this.animatedBaballeOnTouch}],
@@ -168,13 +187,7 @@ export default class Baballe extends Component {
                          left: wrappedAnimatedPoseX,
                          backgroundColor: baballeColor,
                        }]}
-                       {...this.panResponder.panHandlers}
-        />
-        <Button title="next"
-                onPress={() => this.props.navigation.navigate(this.props.rightScreen)}
-        />
-        <Button title="prev"
-                onPress={() => this.props.navigation.navigate(this.props.leftScreen)}
+                       {...this.panResponderBaballe.panHandlers}
         />
       </View>
     );
