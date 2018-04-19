@@ -1,0 +1,9 @@
+
+git_url("ssh://git@5.51.212.47:/git/certificates")
+
+type("development") # Type can be: appstore, adhoc, enterprise or development
+
+app_identifier(["io.Blackfoot.baballe"])
+username("thomas.de.beauchene@gmail.com")
+
+# For all available options run `fastlane match --help`
