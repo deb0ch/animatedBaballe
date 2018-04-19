@@ -24,63 +24,47 @@ platform :android do
             path: './android/app/build.gradle',
             type: "patch"
         )
-
         gradle(
             task: 'assemble',
             build_type: 'Release',
             project_dir: 'android/'
         )
-
         changelog = changelog_from_git_commits
-
         # don't mind publishing keys to GitHub since it is a dummy organization
         crashlytics(
           api_token: "afe07034e00f5c1cb31684b4d7aeafbd81def414",
           build_secret: "0292321e17f88dd00d174718a02608f6675a17f51cf81399b88012f037b6c77f",
           notes: changelog
         )
-
         git_commit(
             path: File.dirname('./android/app/build.gradle'),
             message: "bump android version"
         )
-
         add_git_tag(
             tag: "v#{lane_context[SharedValues::ANDROID_VERSION_NAME]}"
         )
-
         push_to_git_remote
     end
 end
 
 platform :ios do
     lane :beta do
-        increment_version_number(
-            xcodeproj:  "ios/animatedBaballe.xcodeproj",
-        )
-
-        increment_build_number(
-            xcodeproj:  "ios/animatedBaballe.xcodeproj",
-        )
-
+        increment_version_number(xcodeproj: "ios/animatedBaballe.xcodeproj")
+        increment_build_number(xcodeproj: "ios/animatedBaballe.xcodeproj")
         match
-
         gym(
             export_method: "development",
             scheme: "animatedBaballe",
             project: "ios/animatedBaballe.xcodeproj",
             clean: true,
         )
-
         changelog = changelog_from_git_commits
-
         # don't mind publishing keys to GitHub since it is a dummy organization
         crashlytics(
           api_token: "afe07034e00f5c1cb31684b4d7aeafbd81def414",
           build_secret: "0292321e17f88dd00d174718a02608f6675a17f51cf81399b88012f037b6c77f",
           notes: changelog
         )
-
         git_commit(
             path: [
                 File.dirname('ios/animatedBaballe-tvOS/Info.plist'),
@@ -91,9 +75,7 @@ platform :ios do
             ],
             message: "bump ios version",
         )
-
         add_git_tag
-
         push_to_git_remote
     end
 end
