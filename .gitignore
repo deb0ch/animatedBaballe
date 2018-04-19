@@ -54,3 +54,5 @@ fastlane/screenshots
 
 android/app/src/main/res/values/com_crashlytics_export_strings.xml
 android/app/src/main/assets
+
+animatedBaballe.app.dSYM.zip
