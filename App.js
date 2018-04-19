@@ -25,8 +25,8 @@ class BaballeScreen2 extends Component {
   render() {
     return (
       <Baballe bgColor={'#ea296a'}
-               baballeColor1={'#ffeb3b'}
-               baballeColor2={'#4b5cba'}
+               baballeColor1={'#4b5cba'}
+               baballeColor2={'#ffeb3b'}
                baballeSize={55}
                leftScreen={'Baballe1'}
                rightScreen={''}
