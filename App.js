@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StackNavigator }   from 'react-navigation';
+import { TabNavigator }     from 'react-navigation';
 
 import Baballe from './src/Baballe'
 
@@ -37,7 +37,7 @@ class BaballeScreen2 extends Component {
 }
 
 
-const RootStack = StackNavigator({
+const RootNav = TabNavigator({
   Baballe1: {
     screen: BaballeScreen1,
   },
@@ -46,17 +46,14 @@ const RootStack = StackNavigator({
   },
 }, {
   initialRouteName: 'Baballe1',
-  headerMode: 'none',
-  navigationOptions: {
-    headerVisible: false,
-  }
+  tabBarComponent: undefined,
 });
 
 
 export default class App extends Component {
   render() {
     return (
-      <RootStack />
+      <RootNav />
     );
   }
 }
