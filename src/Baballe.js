@@ -68,13 +68,14 @@ export default class Baballe extends Component {
     this.touchOffset.x = e.nativeEvent.locationX;
     this.touchOffset.y = e.nativeEvent.locationY;
     this.animateOnTouch();
-    Animated.loop(Animated.timing(
+    this.animatedBaballeTravel.setValue(0);
+    Animated.timing(
       this.animatedBaballeTravel, {
         toValue: 1200,
-        duration: 600,
+        duration: 300,
         easing: Easing.sin,
       }
-    )).start();
+    ).start();
   }
 
   baballeOnPanResponderMove(e, gestureState) {
