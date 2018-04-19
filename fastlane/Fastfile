@@ -58,9 +58,13 @@ platform :ios do
         increment_version_number(
             xcodeproj:  "ios/animatedBaballe.xcodeproj",
         )
+
         increment_build_number(
             xcodeproj:  "ios/animatedBaballe.xcodeproj",
         )
+
+        match
+
         gym(
             export_method: "development",
             scheme: "animatedBaballe",
