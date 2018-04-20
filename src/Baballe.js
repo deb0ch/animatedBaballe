@@ -177,6 +177,8 @@ export default class Baballe extends Component {
       ...this.makeColorFadingRange(600, 100,
                                    this.props.baballeColor1,
                                    this.props.baballeColor2),
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
     })
     return (
       <View style={this.styles.container}
