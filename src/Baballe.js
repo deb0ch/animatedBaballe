@@ -15,8 +15,8 @@ export default class Baballe extends Component {
   constructor (props) {
     super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
-    this.animatedBaballeOnTouch = new Animated.Value(1);
-    this.animatedBaballeTravel = new Animated.Value(0);
+    this.animatedBaballeScale = new Animated.Value(1);
+    this.animatedBaballeColor = new Animated.Value(0);
     this.touchOffset = {x: 0, y: 0};
     this.baballeInitialized = false;
     this.styles = StyleSheet.create({
@@ -67,8 +67,8 @@ export default class Baballe extends Component {
   baballeOnPanResponderGrant(e, gestureState) {
     this.touchOffset.x = e.nativeEvent.locationX;
     this.touchOffset.y = e.nativeEvent.locationY;
-    this.animatedBaballeTravel.setValue(0);
-    this.animateOnTouch();
+    this.animatedBaballeColor.setValue(0);
+    this.animateSpringScale();
   }
 
   baballeOnPanResponderMove(e, gestureState) {
@@ -86,7 +86,7 @@ export default class Baballe extends Component {
       }
     ).start();
     Animated.decay(
-      this.animatedBaballeTravel, {
+      this.animatedBaballeColor, {
         velocity: Math.sqrt(Math.pow(gestureState.vx, 2) + Math.pow(gestureState.vy, 2)),
         deceleration: 0.997,
       }
@@ -101,10 +101,10 @@ export default class Baballe extends Component {
     }
   }
 
-  animateOnTouch() {
-    this.animatedBaballeOnTouch.setValue(1.0);
+  animateSpringScale() {
+    this.animatedBaballeScale.setValue(1.0);
     Animated.spring(
-      this.animatedBaballeOnTouch, {
+      this.animatedBaballeScale, {
         toValue: 1.0,
         friction: 1.5,
         velocity: -1,
@@ -173,7 +173,7 @@ export default class Baballe extends Component {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });
-    const baballeColor = this.animatedBaballeTravel.interpolate({
+    const baballeColor = this.animatedBaballeColor.interpolate({
       ...this.makeColorFadingRange(600, 100,
                                    this.props.baballeColor1,
                                    this.props.baballeColor2),
@@ -186,7 +186,7 @@ export default class Baballe extends Component {
             {...this.panResponderNav.panHandlers}
       >
         <Animated.View style={[this.styles.baballe, {
-                         transform: [{scale: this.animatedBaballeOnTouch}],
+                         transform: [{scale: this.animatedBaballeScale}],
                          top: wrappedAnimatedPoseY,
                          left: wrappedAnimatedPoseX,
                          backgroundColor: baballeColor,
