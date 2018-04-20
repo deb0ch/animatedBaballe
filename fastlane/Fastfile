@@ -11,15 +11,12 @@ before_all do
 end
 
 platform :android do
-    before_all do
+    lane :beta do
         gradle(
             task: 'clean',
             project_dir: 'android/'
         )
         increment_android_version_code(path: './android/app/build.gradle')
-    end
-
-    lane :beta do
         increment_android_version_name(
             path: './android/app/build.gradle',
             type: "patch"
