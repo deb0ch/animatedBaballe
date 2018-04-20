@@ -87,7 +87,8 @@ export default class Baballe extends Component {
     ).start();
     Animated.decay(
       this.animatedBaballeColor, {
-        velocity: Math.sqrt(Math.pow(gestureState.vx, 2) + Math.pow(gestureState.vy, 2)),
+        velocity: Math.sqrt(Math.pow(gestureState.vx, 2)
+                            + Math.pow(gestureState.vy, 2)),
         deceleration: 0.997,
       }
     ).start();
@@ -141,8 +142,10 @@ export default class Baballe extends Component {
   }
 
   initBaballe(layout) {
-    this.animatedBaballePose.x.setValue((layout.width - this.props.baballeSize) / 2);
-    this.animatedBaballePose.y.setValue((layout.height - this.props.baballeSize) / 2);
+    const initWidth = (layout.width - this.props.baballeSize) / 2;
+    const initHeight = (layout.height - this.props.baballeSize) / 2;
+    this.animatedBaballePose.x.setValue(initWidth);
+    this.animatedBaballePose.y.setValue(initHeight);
     this.baballeInitialized = true;
   }
 
