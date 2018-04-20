@@ -94,9 +94,9 @@ export default class Baballe extends Component {
   }
 
   navOnPanResponderRelease(e, gestureState) {
-    if (gestureState.dx > this.state.layout.x / 3) {
+    if (gestureState.dx > this.state.layout.width / 3) {
       this.props.navigation.navigate(this.props.leftScreen);
-    } else if (gestureState.dx < -this.state.layout.x / 3) {
+    } else if (gestureState.dx < -this.state.layout.width / 3) {
       this.props.navigation.navigate(this.props.rightScreen);
     }
   }
