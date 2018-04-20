@@ -51,7 +51,7 @@ platform :ios do
     lane :beta do
         increment_version_number(xcodeproj: "ios/animatedBaballe.xcodeproj")
         increment_build_number(xcodeproj: "ios/animatedBaballe.xcodeproj")
-        match
+        match(force_for_new_devices: true)
         gym(
             export_method: "development",
             scheme: "animatedBaballe",
