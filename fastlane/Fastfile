@@ -48,6 +48,10 @@ platform :ios do
     lane :beta do
         increment_version_number(xcodeproj: "ios/animatedBaballe.xcodeproj")
         increment_build_number(xcodeproj: "ios/animatedBaballe.xcodeproj")
+        register_devices(
+            username: "thomas.de.beauchene@gmail.com",
+            devices_file: "./fastlane/multiple-device-upload-ios.txt",
+        )
         match(force_for_new_devices: true)
         gym(
             export_method: "development",
