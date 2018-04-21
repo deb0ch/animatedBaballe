@@ -12,11 +12,17 @@ import { Animated,
 
 
 export default class Baballe extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
     this.animatedBaballeScale = new Animated.Value(1);
-    this.animatedBaballeColor = new Animated.Value(0);
+    this.animatedBaballeTravel = new Animated.Value(0);
+    this.animatedBaballeColor = this.animatedBaballeTravel.interpolate({
+      ...this.makeColorFadingRange(600, 100,
+                                   this.props.baballeColor1,
+                                   this.props.baballeColor2),
+      extrapolate: 'clamp',
+    })
     this.touchOffset = {x: 0, y: 0};
     this.baballeInitialized = false;
     this.styles = StyleSheet.create({
@@ -67,7 +73,7 @@ export default class Baballe extends Component {
   baballeOnPanResponderGrant(e, gestureState) {
     this.touchOffset.x = e.nativeEvent.locationX;
     this.touchOffset.y = e.nativeEvent.locationY;
-    this.animatedBaballeColor.setValue(0);
+    this.animatedBaballeTravel.setValue(0);
     this.animateSpringScale();
   }
 
@@ -86,7 +92,7 @@ export default class Baballe extends Component {
       }
     ).start();
     Animated.decay(
-      this.animatedBaballeColor, {
+      this.animatedBaballeTravel, {
         velocity: Math.sqrt(Math.pow(gestureState.vx, 2)
                             + Math.pow(gestureState.vy, 2)),
         deceleration: 0.997,
@@ -168,21 +174,12 @@ export default class Baballe extends Component {
     const limitY = this.state.layout.height - this.props.baballeSize;
     const wrappedAnimatedPoseX = this.animatedBaballePose.x.interpolate({
       ...this.makeWrappingRange(limitX, 100),
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
+      extrapolate: 'clamp',
     });
     const wrappedAnimatedPoseY = this.animatedBaballePose.y.interpolate({
       ...this.makeWrappingRange(limitY, 100),
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
+      extrapolate: 'clamp',
     });
-    const baballeColor = this.animatedBaballeColor.interpolate({
-      ...this.makeColorFadingRange(600, 100,
-                                   this.props.baballeColor1,
-                                   this.props.baballeColor2),
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    })
     return (
       <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
@@ -192,7 +189,7 @@ export default class Baballe extends Component {
                          transform: [{scale: this.animatedBaballeScale}],
                          top: wrappedAnimatedPoseY,
                          left: wrappedAnimatedPoseX,
-                         backgroundColor: baballeColor,
+                         backgroundColor: this.animatedBaballeColor,
                        }]}
                        {...this.panResponderBaballe.panHandlers}
         />
