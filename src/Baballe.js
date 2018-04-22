@@ -22,7 +22,7 @@ export default class Baballe extends Component {
                                    this.props.baballeColor1,
                                    this.props.baballeColor2),
       extrapolate: 'clamp',
-    })
+    });
     this.touchOffset = {x: 0, y: 0};
     this.baballeInitialized = false;
     this.styles = StyleSheet.create({
@@ -83,7 +83,7 @@ export default class Baballe extends Component {
       y: gestureState.moveY - this.touchOffset.y,
     };
     const {layout} = this.state;
-    const {baballeSize} = this.props
+    const {baballeSize} = this.props;
     pos.x = Math.min(pos.x, layout.x + layout.width - baballeSize);
     pos.x = Math.max(pos.x, layout.x);
     pos.y = Math.min(pos.y, layout.y + layout.height - baballeSize);
