@@ -78,10 +78,17 @@ export default class Baballe extends Component {
   }
 
   baballeOnPanResponderMove(e, gestureState) {
-    this.animatedBaballePose.setValue({
+    const pos = {
       x: gestureState.moveX - this.touchOffset.x,
       y: gestureState.moveY - this.touchOffset.y,
-    });
+    };
+    const {layout} = this.state;
+    const {baballeSize} = this.props
+    pos.x = Math.min(pos.x, layout.x + layout.width - baballeSize);
+    pos.x = Math.max(pos.x, layout.x);
+    pos.y = Math.min(pos.y, layout.y + layout.height - baballeSize);
+    pos.y = Math.max(pos.y, layout.y);
+    this.animatedBaballePose.setValue(pos);
   }
 
   baballeOnPanResponderRelease(e, gestureState) {
