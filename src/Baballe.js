@@ -12,6 +12,15 @@ import { Animated,
 
 
 export default class Baballe extends Component {
+  static propTypes = {
+    bgColor: PropTypes.string.isRequired,
+    baballeColor1: PropTypes.string.isRequired,
+    baballeColor2: PropTypes.string.isRequired,
+    baballeSize: PropTypes.number.isRequired,
+    leftScreen: PropTypes.string.isRequired,
+    rightScreen: PropTypes.string.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
@@ -204,12 +213,3 @@ export default class Baballe extends Component {
     );
   }
 }
-
-Baballe.propTypes = {
-  bgColor: PropTypes.string.isRequired,
-  baballeColor1: PropTypes.string.isRequired,
-  baballeColor2: PropTypes.string.isRequired,
-  baballeSize: PropTypes.number.isRequired,
-  leftScreen: PropTypes.string.isRequired,
-  rightScreen: PropTypes.string.isRequired,
-};
