@@ -17,9 +17,14 @@ export default class Baballe extends Component {
     baballeColor1: PropTypes.string.isRequired,
     baballeColor2: PropTypes.string.isRequired,
     baballeSize: PropTypes.number.isRequired,
+    deceleration: PropTypes.number,
     leftScreen: PropTypes.string.isRequired,
     rightScreen: PropTypes.string.isRequired,
   };
+
+  static defaultProps = {
+    deceleration: 0.997,
+  }
 
   constructor(props) {
     super(props);
@@ -104,7 +109,7 @@ export default class Baballe extends Component {
     Animated.decay(
       this.animatedBaballePose, {
         velocity: {x: gestureState.vx, y: gestureState.vy},
-        deceleration: 0.997,
+        deceleration: this.props.deceleration,
       }
     ).start();
     Animated.decay(
