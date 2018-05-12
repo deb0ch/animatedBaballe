@@ -11,6 +11,11 @@ import { Animated,
          View }             from 'react-native';
 
 
+function vector2DNorm(x, y) {
+  return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+}
+
+
 export default class Baballe extends Component {
   static propTypes = {
     bgColor: PropTypes.string.isRequired,
@@ -30,11 +35,10 @@ export default class Baballe extends Component {
     super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
     this.animatedBaballeScale = new Animated.Value(1);
-    this.animatedBaballeTravel = new Animated.Value(0);
-    this.animatedBaballeColor = this.animatedBaballeTravel.interpolate({
-      ...this.makeColorFadingRange(600, 100,
-                                   this.props.baballeColor1,
-                                   this.props.baballeColor2),
+    this.animatedBaballeSpeed = new Animated.Value(0);
+    this.animatedBaballeColor = this.animatedBaballeSpeed.interpolate({
+      inputRange: [0, 4],
+      outputRange: [this.props.baballeColor1, this.props.baballeColor2],
       extrapolate: 'clamp',
     });
     this.touchOffset = {x: 0, y: 0};
@@ -87,7 +91,6 @@ export default class Baballe extends Component {
   baballeOnPanResponderGrant(e, gestureState) {
     this.touchOffset.x = e.nativeEvent.locationX;
     this.touchOffset.y = e.nativeEvent.locationY;
-    this.animatedBaballeTravel.setValue(0);
     this.animateSpringScale();
   }
 
@@ -103,6 +106,9 @@ export default class Baballe extends Component {
     pos.y = Math.min(pos.y, layout.y + layout.height - baballeSize);
     pos.y = Math.max(pos.y, layout.y);
     this.animatedBaballePose.setValue(pos);
+    this.animatedBaballeSpeed.setValue(
+      vector2DNorm(gestureState.vx, gestureState.vy)
+    );
   }
 
   baballeOnPanResponderRelease(e, gestureState) {
@@ -112,11 +118,12 @@ export default class Baballe extends Component {
         deceleration: this.props.deceleration,
       }
     ).start();
-    Animated.decay(
-      this.animatedBaballeTravel, {
-        velocity: Math.sqrt(Math.pow(gestureState.vx, 2)
-                            + Math.pow(gestureState.vy, 2)),
-        deceleration: 0.997,
+    const velocity = vector2DNorm(gestureState.vx, gestureState.vy);
+    Animated.timing(
+      this.animatedBaballeSpeed, {
+        toValue: 0,
+        duration: -Math.log(0.1 / velocity) / (1 - this.props.deceleration),
+        easing: Easing.linear,
       }
     ).start();
   }
@@ -150,20 +157,6 @@ export default class Baballe extends Component {
       inputRange.push(i * value);
       outputRange.unshift(i % 2 === 0 ? 0 : value);
       outputRange.push(i % 2 === 0 ? 0 : value);
-    }
-    return {inputRange, outputRange};
-  }
-
-  makeColorFadingRange(period, times, color1, color2) {
-    const inputRange = [];
-    const outputRange = [];
-    inputRange.push(0);
-    outputRange.push(color1);
-    for (const i = 1; i <= times; i++) {
-      inputRange.unshift(-i * period);
-      inputRange.push(i * period);
-      outputRange.unshift(i % 2 ? color2 : color1);
-      outputRange.push(i % 2 ? color2 : color1);
     }
     return {inputRange, outputRange};
   }
