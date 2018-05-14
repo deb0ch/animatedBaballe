@@ -37,7 +37,7 @@ class BaballeScreen2 extends Component {
 }
 
 
-const RootNav = TabNavigator({
+const AppNavigator = TabNavigator({
   Baballe1: {
     screen: BaballeScreen1,
   },
@@ -53,7 +53,7 @@ const RootNav = TabNavigator({
 export default class App extends Component {
   render() {
     return (
-      <RootNav />
+      <AppNavigator />
     );
   }
 }
