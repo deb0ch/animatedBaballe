@@ -179,7 +179,9 @@ export default class Baballe extends Component {
   }
 
   render() {
-    if (!this.state.layout) {
+    if (!this.state.layout
+        || this.state.layout.width === 0
+        || this.state.layout.height === 0) {
       return (
         <View style={this.styles.container}
               onLayout={this.handleOnLayout.bind(this)}
