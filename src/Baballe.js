@@ -28,7 +28,7 @@ export default class Baballe extends Component {
   };
 
   static defaultProps = {
-    deceleration: 0.997,
+    deceleration: 0.998,
   }
 
   constructor(props) {
