@@ -56,6 +56,7 @@ export default class Baballe extends Component {
         height: this.props.baballeSize,
       }
     });
+    this.container = React.createRef();
     this.state = {
       layout: null,
     };
@@ -77,8 +78,8 @@ export default class Baballe extends Component {
   }
 
   baballeOnPanResponderGrant(e, gestureState) {
-    this.touchOffset.x = e.nativeEvent.locationX;
-    this.touchOffset.y = e.nativeEvent.locationY;
+    this.touchOffset.x = e.nativeEvent.locationX + this.state.layout.pageX;
+    this.touchOffset.y = e.nativeEvent.locationY + this.state.layout.pageY;
     this.animateSpringScale();
   }
 
@@ -150,10 +151,12 @@ export default class Baballe extends Component {
   }
 
   handleOnLayout(e) {
-    const layout = e.nativeEvent.layout;
-    if (!this.state.baballeInitialized)
-      this.initBaballe(layout);
-    this.setState({layout});
+    this.container.current.measure((x, y, width, height, pageX, pageY) => {
+      const layout = {x, y, width, height, pageX, pageY};
+      if (!this.state.baballeInitialized)
+        this.initBaballe(layout);
+      this.setState({layout});
+    });
   }
 
   render() {
@@ -163,6 +166,7 @@ export default class Baballe extends Component {
       return (
         <View style={this.styles.container}
               onLayout={this.handleOnLayout.bind(this)}
+              ref={this.container}
         />
       );
     }
@@ -179,6 +183,7 @@ export default class Baballe extends Component {
     return (
       <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
+            ref={this.container}
       >
         <Animated.View style={[this.styles.baballe, {
                          transform: [{scale: this.animatedBaballeScale}],
