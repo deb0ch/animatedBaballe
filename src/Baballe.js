@@ -25,8 +25,6 @@ export default class Baballe extends Component {
     baballeColor2: PropTypes.string.isRequired,
     baballeSize: PropTypes.number.isRequired,
     deceleration: PropTypes.number,
-    leftScreen: PropTypes.string.isRequired,
-    rightScreen: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -64,7 +62,7 @@ export default class Baballe extends Component {
   }
 
   componentWillMount () {
-    this.panResponderBaballe = PanResponder.create({
+    this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (e, gestureState) => false,
       onStartShouldSetPanResponderCapture: (e, gestureState) => true,
       onMoveShouldSetPanResponder: (e, gestureState) => true,
@@ -74,18 +72,6 @@ export default class Baballe extends Component {
       onPanResponderGrant: this.baballeOnPanResponderGrant.bind(this),
       onPanResponderMove: this.baballeOnPanResponderMove.bind(this),
       onPanResponderRelease: this.baballeOnPanResponderRelease.bind(this),
-      onPanResponderTerminate: (e, gestureState) => {},
-    });
-    this.panResponderNav = PanResponder.create({
-      onStartShouldSetPanResponder: (e, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (e, gestureState) => false,
-      onMoveShouldSetPanResponder: (e, gestureState) => false,
-      onMoveShouldSetPanResponderCapture: (e, gestureState) => false,
-      onPanResponderTerminationRequest: (e, gestureState) => true,
-      onShouldBlockNativeResponder: (e, gestureState) => true,
-      onPanResponderGrant: (e, gestureState) => {},
-      onPanResponderMove: (e, gestureState) => {},
-      onPanResponderRelease: this.navOnPanResponderRelease.bind(this),
       onPanResponderTerminate: (e, gestureState) => {},
     });
   }
@@ -128,14 +114,6 @@ export default class Baballe extends Component {
         easing: Easing.linear,
       }
     ).start();
-  }
-
-  navOnPanResponderRelease(e, gestureState) {
-    if (gestureState.dx > this.state.layout.width / 3) {
-      this.props.navigation.navigate(this.props.leftScreen);
-    } else if (gestureState.dx < -this.state.layout.width / 3) {
-      this.props.navigation.navigate(this.props.rightScreen);
-    }
   }
 
   animateSpringScale() {
@@ -201,7 +179,6 @@ export default class Baballe extends Component {
     return (
       <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
-            {...this.panResponderNav.panHandlers}
       >
         <Animated.View style={[this.styles.baballe, {
                          transform: [{scale: this.animatedBaballeScale}],
@@ -209,7 +186,7 @@ export default class Baballe extends Component {
                          left: wrappedAnimatedPoseX,
                          backgroundColor: this.animatedBaballeColor,
                        }]}
-                       {...this.panResponderBaballe.panHandlers}
+                       {...this.panResponder.panHandlers}
         />
       </View>
     );

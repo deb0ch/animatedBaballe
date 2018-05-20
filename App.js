@@ -12,8 +12,6 @@ class BaballeScreen1 extends Component {
                baballeColor1={'#ea296a'}
                baballeColor2={'#ffeb3b'}
                baballeSize={55}
-               leftScreen={''}
-               rightScreen={'Baballe2'}
                {...this.props}
       />
     );
@@ -28,8 +26,6 @@ class BaballeScreen2 extends Component {
                baballeColor1={'#4b5cba'}
                baballeColor2={'#ffeb3b'}
                baballeSize={55}
-               leftScreen={'Baballe1'}
-               rightScreen={''}
                {...this.props}
       />
     );
