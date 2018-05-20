@@ -57,9 +57,7 @@ export default class Baballe extends Component {
       }
     });
     this.container = React.createRef();
-    this.state = {
-      layout: null,
-    };
+    this.state = { layout: null };
   }
 
   componentWillMount () {
@@ -70,20 +68,27 @@ export default class Baballe extends Component {
       onMoveShouldSetPanResponderCapture: (e, gestureState) => true,
       onPanResponderTerminationRequest: (e, gestureState) => false,
       onShouldBlockNativeResponder: (e, gestureState) => true,
-      onPanResponderGrant: this.baballeOnPanResponderGrant.bind(this),
-      onPanResponderMove: this.baballeOnPanResponderMove.bind(this),
-      onPanResponderRelease: this.baballeOnPanResponderRelease.bind(this),
+      onPanResponderGrant: this.onPanResponderGrant.bind(this),
+      onPanResponderMove: this.onPanResponderMove.bind(this),
+      onPanResponderRelease: this.onPanResponderRelease.bind(this),
       onPanResponderTerminate: (e, gestureState) => {},
     });
   }
 
-  baballeOnPanResponderGrant(e, gestureState) {
+  onPanResponderGrant(e, gestureState) {
     this.touchOffset.x = e.nativeEvent.locationX + this.state.layout.pageX;
     this.touchOffset.y = e.nativeEvent.locationY + this.state.layout.pageY;
-    this.animateSpringScale();
+    this.animatedBaballeScale.setValue(1.0);
+    Animated.spring(
+      this.animatedBaballeScale, {
+        toValue: 1.0,
+        friction: 1.5,
+        velocity: -1,
+      },
+    ).start();
   }
 
-  baballeOnPanResponderMove(e, gestureState) {
+  onPanResponderMove(e, gestureState) {
     const pos = {
       x: gestureState.moveX - this.touchOffset.x,
       y: gestureState.moveY - this.touchOffset.y,
@@ -100,7 +105,7 @@ export default class Baballe extends Component {
     );
   }
 
-  baballeOnPanResponderRelease(e, gestureState) {
+  onPanResponderRelease(e, gestureState) {
     Animated.decay(
       this.animatedBaballePose, {
         velocity: {x: gestureState.vx, y: gestureState.vy},
@@ -114,17 +119,6 @@ export default class Baballe extends Component {
         duration: -Math.log(0.1 / velocity) / (1 - this.props.deceleration),
         easing: Easing.linear,
       }
-    ).start();
-  }
-
-  animateSpringScale() {
-    this.animatedBaballeScale.setValue(1.0);
-    Animated.spring(
-      this.animatedBaballeScale, {
-        toValue: 1.0,
-        friction: 1.5,
-        velocity: -1,
-      },
     ).start();
   }
 
@@ -143,10 +137,10 @@ export default class Baballe extends Component {
   }
 
   initBaballe(layout) {
-    const initWidth = (layout.width - this.props.baballeSize) / 2;
-    const initHeight = (layout.height - this.props.baballeSize) / 2;
-    this.animatedBaballePose.x.setValue(initWidth);
-    this.animatedBaballePose.y.setValue(initHeight);
+    const initX = (layout.width - this.props.baballeSize) / 2;
+    const initY = (layout.height - this.props.baballeSize) / 2;
+    this.animatedBaballePose.x.setValue(initX);
+    this.animatedBaballePose.y.setValue(initY);
     this.baballeInitialized = true;
   }
 
