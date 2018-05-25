@@ -110,10 +110,11 @@ export default class Baballe extends Component {
       }
     ).start();
     const velocity = vector2DNorm(gestureState.vx, gestureState.vy);
+    const { deceleration } = this.props;
     Animated.timing(
       this.animatedBaballeSpeed, {
         toValue: 0,
-        duration: -Math.log(0.1 / velocity) / (1 - this.props.deceleration),
+        duration: -Math.log(0.005 / velocity) / (1 - deceleration),
         easing: Easing.linear,
       }
     ).start();
