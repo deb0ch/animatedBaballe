@@ -34,8 +34,6 @@ export default class Baballe extends Component {
   constructor(props) {
     super(props);
     this.animatedBaballePose = new Animated.ValueXY({x: 0, y: 0});
-    this.wrappedAnimatedPoseX = null;
-    this.wrappedAnimatedPoseY = null;
     this.animatedBaballeScale = new Animated.Value(1);
     this.animatedBaballeSpeed = new Animated.Value(0);
     this.animatedBaballeColor = this.animatedBaballeSpeed.interpolate({
@@ -58,6 +56,7 @@ export default class Baballe extends Component {
         height: this.props.baballeSize,
       }
     });
+    this.container = React.createRef();
     this.state = { layout: null };
   }
 
@@ -77,11 +76,8 @@ export default class Baballe extends Component {
   }
 
   onPanResponderGrant(e, gestureState) {
-    this.animatedBaballePose.setOffset({
-      x: this.wrappedAnimatedPoseX.__getValue(),
-      y: this.wrappedAnimatedPoseY.__getValue(),
-    });
-    this.animatedBaballePose.setValue({x: 0, y: 0});
+    this.touchOffset.x = e.nativeEvent.locationX + this.state.layout.pageX;
+    this.touchOffset.y = e.nativeEvent.locationY + this.state.layout.pageY;
     this.animatedBaballeScale.setValue(1.0);
     Animated.spring(
       this.animatedBaballeScale, {
@@ -93,10 +89,17 @@ export default class Baballe extends Component {
   }
 
   onPanResponderMove(e, gestureState) {
-    this.animatedBaballePose.setValue({
-      x: gestureState.dx,
-      y: gestureState.dy,
-    });
+    const pos = {
+      x: gestureState.moveX - this.touchOffset.x,
+      y: gestureState.moveY - this.touchOffset.y,
+    };
+    const {layout} = this.state;
+    const {baballeSize} = this.props;
+    pos.x = Math.min(pos.x, layout.x + layout.width - baballeSize);
+    pos.x = Math.max(pos.x, layout.x);
+    pos.y = Math.min(pos.y, layout.y + layout.height - baballeSize);
+    pos.y = Math.max(pos.y, layout.y);
+    this.animatedBaballePose.setValue(pos);
     this.animatedBaballeSpeed.setValue(
       vector2DNorm(gestureState.vx, gestureState.vy)
     );
@@ -143,10 +146,12 @@ export default class Baballe extends Component {
   }
 
   handleOnLayout(e) {
-    const { layout } = e.nativeEvent;
-    if (!this.state.baballeInitialized)
-      this.initBaballe(layout);
-    this.setState({layout});
+    this.container.current.measure((x, y, width, height, pageX, pageY) => {
+      const layout = {x, y, width, height, pageX, pageY};
+      if (!this.state.baballeInitialized)
+        this.initBaballe(layout);
+      this.setState({layout});
+    });
   }
 
   render() {
@@ -156,27 +161,29 @@ export default class Baballe extends Component {
       return (
         <View style={this.styles.container}
               onLayout={this.handleOnLayout.bind(this)}
+              ref={this.container}
         />
       );
     }
     const limitX = this.state.layout.width - this.props.baballeSize;
     const limitY = this.state.layout.height - this.props.baballeSize;
-    this.wrappedAnimatedPoseX = this.animatedBaballePose.x.interpolate({
+    const wrappedAnimatedPoseX = this.animatedBaballePose.x.interpolate({
       ...this.makeWrappingRange(limitX, 100),
       extrapolate: 'clamp',
     });
-    this.wrappedAnimatedPoseY = this.animatedBaballePose.y.interpolate({
+    const wrappedAnimatedPoseY = this.animatedBaballePose.y.interpolate({
       ...this.makeWrappingRange(limitY, 100),
       extrapolate: 'clamp',
     });
     return (
       <View style={this.styles.container}
             onLayout={this.handleOnLayout.bind(this)}
+            ref={this.container}
       >
         <Animated.View style={[this.styles.baballe, {
                          transform: [{scale: this.animatedBaballeScale}],
-                         top: this.wrappedAnimatedPoseY,
-                         left: this.wrappedAnimatedPoseX,
+                         top: wrappedAnimatedPoseY,
+                         left: wrappedAnimatedPoseX,
                          backgroundColor: this.animatedBaballeColor,
                        }]}
                        {...this.panResponder.panHandlers}
