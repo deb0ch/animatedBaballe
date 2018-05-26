@@ -121,7 +121,7 @@ export default class Baballe extends Component {
       this.animatedBaballeSpeed, {
         toValue: 0,
         duration: -Math.log(0.005 / velocity) / (1 - deceleration),
-        easing: Easing.linear,
+        easing: Easing.out(Easing.quad),
       }
     ).start();
   }
