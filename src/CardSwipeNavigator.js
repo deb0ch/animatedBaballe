@@ -112,7 +112,15 @@ class CardSwipeNavView extends Component {
                 initialPosX + width
             ],
         });
-        return {transform: [{translateX}]};
+        const opacity = translateX.interpolate({
+            inputRange: [-width, 0, width],
+            outputRange: [0.8, 1, 0.8],
+        });
+        const scale = translateX.interpolate({
+            inputRange: [-width, 0, width],
+            outputRange: [0.9, 1, 0.9],
+        })
+        return {opacity, transform: [{translateX}, {scale}]};
     }
 
     renderScene(route, index) {
