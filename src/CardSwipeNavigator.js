@@ -78,10 +78,10 @@ class CardSwipeNavView extends Component {
         const { index, routes } = navigation.state;
         const canSwipeLeft = (index > 0
                               && dx > this.state.layout.width / 4
-                              && vx > 1);
+                              && vx > 0.5);
         const canSwipeRight = (index < routes.length - 1
                                && dx < -this.state.layout.width / 4
-                               && vx < -1);
+                               && vx < -0.5);
         if (canSwipeLeft) {
             this.swipe('left');
         } else if (canSwipeRight) {
