@@ -76,6 +76,9 @@ export default class Baballe extends Component {
   }
 
   onPanResponderGrant(e, gestureState) {
+    this.animatedBaballePose.stopAnimation();
+    this.animatedBaballeSpeed.stopAnimation();
+    this.animatedBaballeSpeed.setValue(0);
     this.touchOffset.x = e.nativeEvent.locationX + this.state.layout.pageX;
     this.touchOffset.y = e.nativeEvent.locationY + this.state.layout.pageY;
     this.animatedBaballeScale.setValue(1.0);
