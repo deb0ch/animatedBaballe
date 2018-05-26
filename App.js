@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { TabNavigator }     from 'react-navigation';
 
-import Baballe from './src/Baballe'
+import Baballe            from './src/Baballe';
+import CardSwipeNavigator from './src/CardSwipeNavigator';
 
 
 class BaballeScreen1 extends Component {
@@ -33,7 +34,7 @@ class BaballeScreen2 extends Component {
 }
 
 
-const AppNavigator = TabNavigator({
+const AppNavigator = CardSwipeNavigator({
   Baballe1: {
     screen: BaballeScreen1,
   },
@@ -42,7 +43,6 @@ const AppNavigator = TabNavigator({
   },
 }, {
   initialRouteName: 'Baballe1',
-  tabBarComponent: undefined,
 });
 
 
