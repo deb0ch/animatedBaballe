@@ -137,7 +137,7 @@ class CardSwipeNavView extends Component {
                     margin: 20,
                     borderRadius: 15,
                     overflow: 'hidden',
-                    zIndex: isFocused ? 0 : Number.MIN_SAFE_INTEGER,
+                    zIndex: isFocused ? 0 : -1000000,
                     ...this.getSwipingStyles(index, focusedIndex),
                 }]}
                 {...panHandlers}
