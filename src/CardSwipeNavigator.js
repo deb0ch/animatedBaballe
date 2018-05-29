@@ -91,7 +91,7 @@ class CardSwipeNavView extends Component {
         }
     }
 
-    getSwipingStyles(index, focusedIndex) {
+    getSwipingTransform(index, focusedIndex) {
         const { width, pageX } = this.state.layout;
         const initialPosX = (index - focusedIndex) * width;
         // Must isolate 0 as a special case so that scenes receive layout as if
@@ -112,15 +112,11 @@ class CardSwipeNavView extends Component {
                 initialPosX + width
             ],
         });
-        const opacity = translateX.interpolate({
-            inputRange: [-width, 0, width],
-            outputRange: [0.8, 1, 0.8],
-        });
-        const scale = translateX.interpolate({
-            inputRange: [-width, 0, width],
-            outputRange: [0.9, 1, 0.9],
+        const scale = this.scrollX.interpolate({
+            inputRange: [-width, -width / 2, 0, width / 2, width],
+            outputRange: [1, 0.9, 1, 0.9, 1],
         })
-        return {opacity, transform: [{translateX}, {scale}]};
+        return {transform: [{translateX}, {scale}]};
     }
 
     renderScene(route, index) {
@@ -130,6 +126,11 @@ class CardSwipeNavView extends Component {
         const focusedIndex = navigation.state.index;
         const isFocused = focusedIndex === index;
         const panHandlers = isFocused ? this.panResponder.panHandlers : {};
+        const {width} = this.state.layout;
+        const opacity = this.scrollX.interpolate({
+            inputRange: [-width, -width / 2, 0, width / 2, width],
+            outputRange: [0, 0.2, 0, 0.2, 0],
+        });
         return (
             <Animated.View
                 key={route.key}
@@ -138,13 +139,19 @@ class CardSwipeNavView extends Component {
                     borderRadius: 15,
                     overflow: 'hidden',
                     zIndex: isFocused ? 0 : -1000000,
-                    ...this.getSwipingStyles(index, focusedIndex),
+                    ...this.getSwipingTransform(index, focusedIndex),
                 }]}
                 {...panHandlers}
             >
                 <SceneView component={SceneComponent}
                            navigation={descriptor.navigation}
                            screenProps={screenProps}
+                />
+                <Animated.View style={[StyleSheet.absoluteFill, {
+                                   opacity,
+                                   backgroundColor: '#FFFFFF',
+                               }]}
+                               pointerEvents={'none'}
                 />
             </Animated.View>
         );
