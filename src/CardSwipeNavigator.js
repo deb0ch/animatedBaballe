@@ -1,7 +1,9 @@
 
 import React, { Component }         from 'react';
 import { Animated,
+         Dimensions,
          Easing,
+         Image,
          PanResponder,
          StyleSheet,
          View }                     from 'react-native';
@@ -14,6 +16,9 @@ import { createNavigationContainer,
 export default createCardSwipeNavigator;
 
 
+const bgImage = require("../assets/892.jpg");
+
+
 function createCardSwipeNavigator(routeConfigMap, config = {}) {
     const router = TabRouter(routeConfigMap, config);
     const Navigator = createNavigator(CardSwipeNavView, router, config);
@@ -21,7 +26,11 @@ function createCardSwipeNavigator(routeConfigMap, config = {}) {
 };
 
 
-class CardSwipeNavView extends Component {
+class CardSwipeScenes extends Component {
+    static propTypes = {
+        // TODO
+    }
+
     constructor(props) {
         super(props);
         this.scrollX = new Animated.Value(0);
@@ -37,7 +46,10 @@ class CardSwipeNavView extends Component {
             onPanResponderTerminationRequest: () => true,
             onShouldBlockNativeResponder: () => true,
             onPanResponderGrant: () => {},
-            onPanResponderMove: Animated.event([null, {dx: this.scrollX}]),
+            onPanResponderMove: (e, gestureState) => {
+                this.props.translateBg.setValue(gestureState.dx);
+                this.scrollX.setValue(gestureState.dx);
+            },
             onPanResponderRelease: this.onPanResponderRelease.bind(this),
             onPanResponderTerminate: () => {},
         });
@@ -46,29 +58,38 @@ class CardSwipeNavView extends Component {
     swipe(direction) {
         const { navigation } = this.props;
         const { index, routes } = navigation.state;
+        const { width } = this.state.layout;
+        const animateSwipe = (screenCount) => {
+            Animated.timing(
+                this.scrollX, {
+                    toValue: width * -screenCount,
+                    duration: 300,
+                }
+            ).start(() => {
+                navigation.navigate(routes[index + screenCount].routeName);
+                this.scrollX.setValue(0);
+            });
+            Animated.timing(
+                this.props.translateBg, {
+                    toValue: width * -screenCount,
+                    duration: 300,
+                }
+            ).start(() =>
+                    this.props.translateBg.stopAnimation((finalValue) => {
+                        this.props.translateBg.setOffset(finalValue);
+                        this.props.translateBg.setValue(0);
+                    }));
+        }
         switch (direction) {
         case 'left':
-            Animated.timing(
-                this.scrollX, {
-                    toValue: this.state.layout.width,
-                    duration: 300,
-                }
-            ).start(() => {
-                navigation.navigate(routes[index - 1].routeName);
-                this.scrollX.setValue(0);
-            });
+            animateSwipe(-1);
             break;
         case 'right':
-            Animated.timing(
-                this.scrollX, {
-                    toValue: -this.state.layout.width,
-                    duration: 300,
-                }
-            ).start(() => {
-                navigation.navigate(routes[index + 1].routeName);
-                this.scrollX.setValue(0);
-            });
+            animateSwipe(1);
             break;
+        default:
+            Animated.spring(this.scrollX, {toValue: 0}).start();
+            Animated.spring(this.props.translateBg, {toValue: 0}).start();
         }
     }
 
@@ -87,7 +108,7 @@ class CardSwipeNavView extends Component {
         } else if (canSwipeRight) {
             this.swipe('right');
         } else {
-            Animated.spring(this.scrollX, {toValue: 0}).start()
+            this.swipe('');
         }
     }
 
@@ -173,4 +194,62 @@ class CardSwipeNavView extends Component {
             </View>
         );
     };
+}
+
+
+class BackgroundWrapper extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    shouldComponentUpdate() {
+        return false;
+    }
+
+    render() {
+        const width = Dimensions.get('screen').width;
+        const translateX = this.props.translateBg.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1/5],
+        });
+        return (
+            <Animated.Image
+                source={bgImage}
+                resizeMode={"repeat"}
+                style={{
+                    width: width * this.props.scenesCount,
+                    height: '100%',
+                    left: -width/2,
+                    zIndex: -1000000000,
+                    transform: [
+                        { translateX },
+                        { scale: 1.05 },
+                    ],
+                }}
+            />
+         );
+    }
+}
+
+
+class CardSwipeNavView extends Component {
+    constructor(props) {
+        super(props);
+        this.translateBg = new Animated.Value(0);
+    }
+
+    render() {
+        const { routes } = this.props.navigation.state;
+        return (
+            <View>
+                <BackgroundWrapper translateBg={this.translateBg}
+                                   scenesCount={routes.length}
+                                   {...this.props}
+                />
+                <CardSwipeScenes translateBg={this.translateBg}
+                                 {...this.props}
+                />
+            </View>
+        );
+    }
 }
