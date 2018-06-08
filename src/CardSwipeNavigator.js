@@ -183,14 +183,19 @@ class CardSwipeScenes extends Component {
     }
 
     render() {
+        if (!this.state.layout)
+            return (
+                <View onLayout={this.handleOnLayout.bind(this)}
+                      style={StyleSheet.absoluteFill}
+                />
+            );
         const { descriptors, navigation, screenProps } = this.props;
         return (
             <View onLayout={this.handleOnLayout.bind(this)}
                   style={StyleSheet.absoluteFill}
                   ref={this.container}
             >
-                {this.state.layout
-                 && navigation.state.routes.map(this.renderScene.bind(this))}
+                {navigation.state.routes.map(this.renderScene.bind(this))}
             </View>
         );
     };
